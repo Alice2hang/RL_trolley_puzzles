@@ -1,0 +1,58 @@
+<p id="center"><b>You have completed the task!</b></p>
+<p id="completioncode"></p>
+<p id="bonusmsg"></p>
+<div id="center">
+    <form id="mTurk_form" onsubmit="mTurkSubmit">
+        <input type="text" id="mTurk_id"/>
+        <input id="mySubmit" type="submit" value="Submit"> 
+        <div id=form_feedback style="display:None"><b>Done!</b></div>
+    </form>
+</div>
+<script>
+    document.getElementById("mTurk_form").addEventListener("submit", mTurkSubmit)
+        
+    function mTurkSubmit(event){
+        event.preventDefault()
+
+        var URLqueryString = window.location.search;
+        var URLparams = new URLSearchParams(URLqueryString);
+        var URL_mTurkID = URLparams.get('workerId')
+                
+        var bonus = (total_score + total_best) * 0.03 
+        if (bonus < 0){ bonus = 0 }
+        var mTurkID = document.getElementById('mTurk_id').value;
+        var datajson = {}
+        datajson["mTurk_id"] = mTurkID;
+        datajson["bonus"] = bonus;
+        datajson["URL_mTurkID"] = URL_mTurkID;
+        datajson = JSON.stringify(datajson)
+        console.log(datajson)
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'put_bonuses.php'); 
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onload = function() {
+            if(xhr.status == 200){
+                var success = xhr.responseText;
+                if (success == "true"){
+                    document.getElementById("form_feedback").style.display = "block"
+                    document.getElementById("form_feedback").style.color = "green"
+                    document.getElementById("form_feedback").innerHTML = "Done!"
+                    document.getElementById("mySubmit").disabled = true;
+                }
+                else {
+                    document.getElementById("form_feedback").style.display = "block"
+                    document.getElementById("form_feedback").style.color = "red"
+                    document.getElementById("form_feedback").innerHTML = "Error, try again"
+                }
+        
+            }
+        };
+        xhr.send(datajson);
+    }
+</script>
+<p>Debrief:</p>
+<p>
+    The purpose of this study is to analyze how people learn to complete a reward-based task. Specifically, we are interested in how training and experience can actually make it more difficult for participants to find certain solutions because they go against the intuitions they have learned. Time constraints are used to test whether participants are more likely to override their intuitions and discover the correct solution given more time to think. 
+</p>
+

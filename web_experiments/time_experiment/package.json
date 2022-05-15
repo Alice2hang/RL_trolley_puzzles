@@ -1,0 +1,16 @@
+{
+  "name": "time_experiment",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "open http://localhost:8123; python -m http.server 8123"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cartesian-product": "^2.1.2",
+    "gridworld-painter": "^1.1.0",
+    "jquery": "^3.4.0"
+  }
+}

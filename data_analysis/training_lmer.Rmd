@@ -1,0 +1,39 @@
+---
+title: "Experiment 2 (Training/No Training Manipulation)"
+output: html_document
+---
+
+```{r imports, include=FALSE}
+library(readr)
+library(lme4)
+```
+
+```{r read data}
+data <- read_csv("data/training_data_coded.csv")
+```
+
+## Linear Mixed Effects Modeling
+Fixed effects are as follows: 
+
+1. `train_group`: the assigned training condition (0.5 if training, -0.5 if no training)
+
+2. `push`: differentiates between push type grids and the matched switch control (0.5 for must push, -0.5 for must switch) 
+
+3. `train_x_push`: interaction between push and train_group 
+
+
+In order to assess whether the key interaction of interest (`train_x_push`) is significant, we will perform model comparison using the `anova` function in R for the following models.
+
+```{r models}
+model_1 <- lmer(score_dif ~ push + (push|user_id) + (train|grid_num), data = data)
+model_2 <- lmer(score_dif ~ train + (push|user_id) + (train|grid_num), data = data)
+model_3 <- lmer(score_dif ~ train + push + (push|user_id) + (train|grid_num), data = data)
+full_model <- lmer(score_dif ~ train + push + train_x_push + (push|user_id) + (train|grid_num), data = data)
+summary(full_model)
+```
+
+```{r anovas}
+anova(model_1, model_3)
+anova(model_2, model_3)
+anova(model_3, full_model)
+```

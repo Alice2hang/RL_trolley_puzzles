@@ -1,0 +1,51 @@
+---
+title: "Experiment 1 (Time Pressure/Delay Manipulation) "
+output: html_document
+---
+
+```{r imports, include=FALSE}
+library(readr)
+library(lme4)
+```
+
+```{r read data}
+data <- read_csv("data/time_pressure_data_coded.csv")
+```
+
+## Linear Mixed Effects Modeling
+Fixed effects are as follows:
+
+1. `time_delay`: the assigned time condition (0.5 if delay, -0.5 if pressure)
+
+2. `in_distrib`: whether the grid belongs to a class seen in training (0.5 if in distrib, -0.5 if novel class)
+
+3. `push`: differentiates between push and switch in the out of distribution cases (0 if in_distrib, 0.5 if grid belongs to must-push, -0.5 if grid belongs to must-switch)
+
+4. `time_x_distrib`: interaction between in_distrib and time_delay
+
+5. `time_x_push`: interaction between time_delay and push
+
+
+In order to assess whether the key interactions of interest (`time_x_distrib` and `time_x_push`) is significant, we perform a series of model comparisons building up from the null model. `in_distrib` and `time_x_distrib` are dropped below as `model_3` and `model_5` are not preferred with `P<0.05`
+
+```{r model comparisons}
+model_1 <- lmer(score_dif ~ (in_distrib|user_id) + (time_constraint|grid_num), data = data)
+model_2 <- lmer(score_dif ~ time_constraint  +  (in_distrib|user_id) + (time_constraint|grid_num), data = data)
+anova(model_1, model_2)
+
+model_3 <- lmer(score_dif ~ time_constraint + in_distrib + (in_distrib|user_id) + (time_constraint|grid_num), data = data, control = lmerControl(optimizer ="Nelder_Mead"))
+anova(model_2, model_3)
+
+model_4 <- lmer(score_dif ~ time_constraint + push + (in_distrib|user_id) + (time_constraint|grid_num), data = data)
+anova(model_2, model_4)
+
+model_5 <- lmer(score_dif ~ time_constraint + push + time_x_distrib +  (in_distrib|user_id) + (time_constraint|grid_num), data = data)
+anova(model_4, model_5)
+
+model_6 <- lmer(score_dif ~ time_constraint + push + time_x_push + (in_distrib|user_id) + (time_constraint|grid_num), data = data)
+anova(model_4, model_6)
+
+model_6
+```
+
+

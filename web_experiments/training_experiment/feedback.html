@@ -1,0 +1,30 @@
+<div id="instructions">
+    <p>You are nearly done! Please give us your feedback on this study: Is there anything you’d like us to know? Is there anything you found confusing? </p>
+    <form>
+        <textarea id="feedback"rows="6" cols="100"></textarea>
+        <p id="empty_message"></p>
+    </form>
+</div>
+<div id="buttonbar">
+    <button type="button" id='finish_button'; onclick="submit_feedback(document.getElementById('feedback').value);">FINISH</button>
+</div>      
+<script>
+    function submit_feedback(user_text){
+        if (user_text.length>0){
+            var datajson = {};
+            datajson["feedback"] = user_text;
+            datajson = JSON.stringify(datajson)
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'put_feedback.php'); 
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(datajson);
+            clickStart("feedbackpage","finishpage");
+            
+        } else {
+            document.getElementById("empty_message").innerHTML = "Please enter feedback in the text box!"
+            document.getElementById("empty_message").style.color = "red"
+        }
+    }
+    
+</script>

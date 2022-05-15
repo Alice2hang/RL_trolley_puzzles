@@ -1,0 +1,160 @@
+/* holds text, images, and task of instructions pages */
+#instructions, #consent, #finishpage {
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+    margin: auto;
+    width: 70%;
+    margin-top:60px;
+    margin-bottom:100px;
+    overflow:hidden;
+}
+
+#taskinfo4, #taskinfo5, #taskinfo6, #taskinfo7, #taskinfotest {
+    float: right;
+    width: 70%;
+    overflow: hidden;   
+}
+
+#rewardinfo4, #rewardinfo5, #rewardinfo6, #rewardinfo7, #rewardinfotest {
+    font-size: 22pt;
+    float: left;
+    overflow: hidden;
+    margin-top: 250px;
+}
+
+/* next and back blue bar div of instructions pages */
+#buttonbar{
+    position: fixed;
+    overflow: hidden;
+    margin-left:-8px;
+    width: 100%;
+    height: 50px;
+    background-color:cadetblue;
+    bottom: 0;
+    display:block;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+button{
+    background-color: cadetblue; 
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+}
+
+input[type=text]{
+    border: none;
+    border-bottom: 2px solid cadetblue;
+    padding: 5px 10px;
+    text-align: center;
+    font-size: 16px;
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+}
+
+input[type=submit]{
+    background-color: cadetblue;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+}
+
+
+/* for mini images on info page 2 */
+#samples{
+    width:auto;
+    height:30;
+    vertical-align:middle;
+}
+
+/* for larger centered images in info sections */
+#centerimg{
+    height:auto;
+    display:block;
+    margin-left:auto;
+    margin-right:auto;
+    width:50%;
+}
+
+#page1, #page2 {
+    margin: 0;
+    position: absolute;
+    height: 500;
+    width: 800;
+
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+
+}
+
+#task, #task2 {
+    float: right;
+    width: 60%;
+    overflow: hidden;   
+    margin-right: 60;
+}
+  
+#info {
+    float: left;
+    overflow: hidden;   
+    margin-left: 60;
+}
+
+#reward, #reward2 {
+    font-size: 22pt;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+#cum_info {
+    position:absolute;
+    top: 70%;
+    -ms-transform: translateY(-70%);
+    transform: translateY(-70%);
+}
+
+#timer, #timer2 {
+    font-size: 102pt;
+    position:absolute;
+    top: 25%;
+    -ms-transform: translateY(-25%);
+    transform: translateY(-25%);
+    color: red;
+}
+
+#infotimer {
+    font-size: 102pt;
+    position:absolute;
+    top: 65%;
+    -ms-transform: translateY(-65%);
+    transform: translateY(-65%);
+    color: red;
+}
+
+#test_button {
+    font-size: 16px;
+    text-align: center;
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+    border-radius: 8px;
+    padding: 6px 10px;
+    color:green;
+}
+  
+#center {
+    text-align: center;
+}

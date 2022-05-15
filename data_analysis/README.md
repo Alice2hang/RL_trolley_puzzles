@@ -1,0 +1,2 @@
+# Experiment Data Analysis
+Each experimental manipulation (time pressure vs time delay, training vs no training) has a corresponding python notebook and R script. Data exclusions and variable encoding are handled in python according to the pre-registered procedure for each experiment. Model comparison using `lmer()` and `anova()` is done in R Markdown files. Raw and coded (output of python notebook) data can be found in `data/` for both experiments.
