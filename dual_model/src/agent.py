@@ -79,12 +79,11 @@ class Agent:
                 Q_dict[state] = self.neural_net_output(grid)
             Q_values = Q_dict[state]
             action_probs = [0 for k in range(len(Q_values))]
-            best_action = np.argmax(Q_values)
+            best_actions = np.argwhere(Q_values == np.max(Q_values))
+            # if multiple best actions, choose randomly between them with probability 1-epsilon
             for i in range(len(Q_values)):
-                if np.all(Q_values == Q_values[0]): #all are zero
-                    action_probs[i] = 1/len(Q_values)
-                elif i == best_action:
-                    action_probs[i] = 1-epsilon+(epsilon/len(Q_values))
+                if i in best_actions:
+                    action_probs[i] = (1-epsilon)/len(best_actions)+(epsilon/len(Q_values))
                 else:
                     action_probs[i] = epsilon/len(Q_values)
             return action_probs
