@@ -47,7 +47,7 @@ class Agent:
             - total_reward (int): reward achieved by model-free NN on input grid
         """
         if display: display_grid(grid)
-        net = self.train_load_neural_net()
+        net = self.load_neural_net()
         total_reward = 0
 
         while not grid.terminal_state: 
@@ -81,7 +81,7 @@ class Agent:
             action_probs = [0 for k in range(len(Q_values))]
             best_action = np.argmax(Q_values)
             for i in range(len(Q_values)):
-                if np.count_nonzero(Q_values) == 0: #all are zero
+                if np.all(Q_values == Q_values[0]): #all are zero
                     action_probs[i] = 1/len(Q_values)
                 elif i == best_action:
                     action_probs[i] = 1-epsilon+(epsilon/len(Q_values))
@@ -105,7 +105,6 @@ class Agent:
             if state not in Q_dict and nn_init:
                 Q_dict[state] = self.neural_net_output(grid)
             Q_values = Q_dict[state]
-
             action_probs = softmax(Q_values)
             return action_probs
         return policy
@@ -154,7 +153,7 @@ class Agent:
         if nn_init:
             Q = {}
         else:
-            Q = defaultdict(lambda: list(0 for i in range(len(grid.all_actions))))
+            Q = defaultdict(lambda: np.zeros(5,dtype=np.float32))
 
         if softmax: 
             policy = self._create_softmax_policy(Q, nn_init) 

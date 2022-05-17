@@ -119,9 +119,10 @@ def train(grids_file, actions_file, num_epochs=100, C=CHANNELS):
                 for j in range((len(test_ys)-1)//batch_size+1):
                     inputs, labels = onehot_test_xs[batch_size*j:batch_size*(j+1)], test_ys[batch_size*j:batch_size*(j+1)]
                     outputs = net(inputs)
-                    label_argmax = torch.argmax(labels, dim=1)
-                    output_argmax = torch.argmax(outputs, dim=1)
-                    accuracy = torch.mean((label_argmax==output_argmax).float())  #Accuracy is not fully reflective of performance, as several actions may have exact same Q-value
+                    label_is_max = labels == labels.max(dim = 1, keepdim = True)[0]
+                    output_argmax = torch.argmax(outputs, dim=1)[:, None]
+                    # accuracy calculation takes into account that action value labels often have equal value (multiple maximums)  
+                    accuracy = torch.mean(torch.gather(label_is_max, 1, output_argmax,  sparse_grad=True).float())
                     test_accuracy.append(accuracy.item())
                     loss = criterion(outputs, labels)
                     test_loss.append(loss.item())

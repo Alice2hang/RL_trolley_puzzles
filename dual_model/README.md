@@ -14,20 +14,18 @@ actions_array = np.load("training_data/actions_200000.npz")[data]
 ```
 
 ## Neural Network
-The CNN model in `models/nn_model` was trained on 200,000 grids or 1,000,000 data points (5 timesteps per grid) for 100 epochs. 
+The CNN model in `models/nn_model` was trained on 200,000 grids or 1,000,000 data points (5 timesteps per grid) for 100 epochs. Because action labels are computed with Q-value iteration, multiple actions may be tied for "best action" at a given grid state. Accuracy reflects whether the predicted "best action" matches one of the highest valued label actions.
 ```
 # Training Log
-Epoch:1, train loss: 0.916, test loss: 0.651, test accuracy: 0.463
-Epoch:11, train loss: 0.156, test loss: 0.157, test accuracy: 0.384
-Epoch:21, train loss: 0.108, test loss: 0.113, test accuracy: 0.415
-Epoch:31, train loss: 0.083, test loss: 0.088, test accuracy: 0.477
-Epoch:41, train loss: 0.067, test loss: 0.072, test accuracy: 0.509
-Epoch:51, train loss: 0.056, test loss: 0.062, test accuracy: 0.529
-Epoch:61, train loss: 0.048, test loss: 0.054, test accuracy: 0.507
-Epoch:71, train loss: 0.042, test loss: 0.048, test accuracy: 0.504
-Epoch:81, train loss: 0.037, test loss: 0.043, test accuracy: 0.500
-Epoch:91, train loss: 0.034, test loss: 0.040, test accuracy: 0.483
-Epoch:100, train loss: 0.031, test loss: 0.037, test accuracy: 0.494
-training took 8222.492278575897 seconds
-Model saved as nn_model
+Epoch:1, train loss: 0.922, test loss: 0.652, test accuracy: 0.549
+Epoch:11, train loss: 0.153, test loss: 0.155, test accuracy: 0.896
+Epoch:21, train loss: 0.103, test loss: 0.106, test accuracy: 0.923
+Epoch:31, train loss: 0.077, test loss: 0.081, test accuracy: 0.930
+Epoch:41, train loss: 0.062, test loss: 0.067, test accuracy: 0.938
+Epoch:51, train loss: 0.052, test loss: 0.057, test accuracy: 0.944
+Epoch:61, train loss: 0.045, test loss: 0.050, test accuracy: 0.950
+Epoch:71, train loss: 0.040, test loss: 0.045, test accuracy: 0.953
+Epoch:81, train loss: 0.036, test loss: 0.044, test accuracy: 0.946
+Epoch:91, train loss: 0.032, test loss: 0.038, test accuracy: 0.952
+Epoch:100, train loss: 0.030, test loss: 0.042, test accuracy: 0.939
 ```
