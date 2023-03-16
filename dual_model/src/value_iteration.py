@@ -3,7 +3,7 @@ import numpy as np
 from itertools import product
 from utils import display_grid, generate_array
 
-def get_true_Qs(input_grid, discount_factor=0.9, display=False):
+def get_true_Qs(input_grid, discount_factor=0.9, display=False, get_is_action_of_interest=False):
     '''
     Returns 'solved' input grid for downstream CNN training. 
     
@@ -15,10 +15,12 @@ def get_true_Qs(input_grid, discount_factor=0.9, display=False):
             input_grid (Grid): Grid object to be solved
             discount_factor (float): for computing time-discounted Q values 
             display (bool): whether to output solution
+            get_is_action_of_interest(bool): Whether or not to return is_action_of_interest
         Returns: (grids_array, actions_array, reward)
             grids_array ((5,4,5,5) np.array): a series of 5 np array state representations for the best solution 
             actions_array ((5,5) np.array): Q values for all 5 possible actions at each state in grids_array
             reward (int): reward value achieved by best solution
+            is_action_of_interest(bool, optional): True grid transition involved a cargo push or switch action, false otherwise
     '''
 
     Q = defaultdict(lambda: list(0 for i in range(len(grid.all_actions))))
@@ -55,6 +57,7 @@ def get_true_Qs(input_grid, discount_factor=0.9, display=False):
     #run optimal policy based on max Q values and generate output for NN training
     total_reward = 0 
     grids_array = []
+    is_action_of_interest_array = []
     action_val_array = np.empty((1,grid.size),dtype=int)
     grid = input_grid.copy()  
     while not grid.terminal_state: 
@@ -67,11 +70,12 @@ def get_true_Qs(input_grid, discount_factor=0.9, display=False):
         action_val_array = np.concatenate((action_val_array,np.array([Q[state]])))
         grids_array.append(generate_array(grid))
         total_reward += grid.R(action)
-        newstate = grid.T(action)
+        newstate, is_action_of_interest = grid.T(action, get_is_action_of_interest = True)
+        is_action_of_interest_array. append(is_action_of_interest)
         state = newstate
     grids_array = np.array(grids_array)
     if display: print(total_reward)
+    if get_is_action_of_interest:
+        return grids_array, action_val_array[1:], total_reward, is_action_of_interest_array
     return grids_array, action_val_array[1:], total_reward
-
-
 

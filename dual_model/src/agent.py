@@ -183,6 +183,10 @@ class Agent:
                 sa_pair = state, action
                 sa_counts[sa_pair] -= 1
                 if sa_counts[sa_pair] == 0: #appears for the first time
+                    if total_sa_counts[sa_pair] == 0 and nn_init:
+                        # For NN Q-value initialization, set as though NN-predicted Q value has been experienced once
+                        sa_reward_sum[sa_pair] += Q[state][action_index]
+                        total_sa_counts[sa_pair] += 1
                     sa_reward_sum[sa_pair] += G
                     total_sa_counts[sa_pair] += 1
                     Q[state][action_index] = sa_reward_sum[sa_pair]/total_sa_counts[sa_pair] #average reward over all episodes

@@ -86,15 +86,19 @@ class Grid:
         return legal_actions
 
 
-    def T(self, action:tuple):
+    def T(self, action:tuple, get_is_action_of_interest=False):
         """
         Precondition: action needs to be legal, board cannot be in terminal state         
         can be changed return duplicate grid object if mutation is bad
         Params: 
             - action(tuple): Agent action that causes state transition
+            - get_is_action_of_interest(bool): Whether or not to return is_action_of_interest
         Returns:
             - next_state(tuple): state after transition is completed
+            - is_action_of_interest(bool, optional): True grid transition involved a cargo push or switch action, false otherwise
         """
+
+        is_action_of_interest = False
 
         #check not terminal state
         if self.terminal_state:
@@ -113,6 +117,7 @@ class Grid:
 
         #check if switch is pushed
         if new_agent_pos == self.switch.pos:
+            is_action_of_interest = True
             new_agent_pos = self.agent_pos #agent
             if self.train.velocity[1] == 0:
                 self.train.velocity = (0, self.train.velocity[0]-self.train.velocity[1])
@@ -137,6 +142,7 @@ class Grid:
             pos_open = new_other_pos not in self.other_agents.positions and new_other_pos != self.switch.pos
             if in_bounds(self.size,new_other_pos) and pos_open and not train_stopped:
                 self.other_agents.push(new_agent_pos,action)
+                is_action_of_interest = True
             else:
                 new_agent_pos = self.agent_pos
 
@@ -167,6 +173,8 @@ class Grid:
         self.agent_pos = new_agent_pos
         self.step += 1
         self.current_state = (self.agent_pos,self.train.pos,*self.other_agents.positions,self.step)
+        if get_is_action_of_interest:
+            return self.current_state, is_action_of_interest
         return self.current_state
 
     def R(self, action:tuple) -> int:
