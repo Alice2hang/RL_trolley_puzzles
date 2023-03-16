@@ -6,6 +6,7 @@
 * `neural_net.py` defines neural net layers, training, and prediction.
 * `agent.py` implements monte carlo tree search to solve gridworld problems and allows for neural network initialization of Q-values.
 * `dual_model_analysis.ipynb` generates graphs of model performance seen in paper. A html version is also provided with final outputs.
+* `supplementals.ipynb` generates exploratory figures not featured in the paper or supplement.
 
 ## Data 
 Neural net training data is stored in `training_data/`. `grids_200000.npz` contains a (1000000, 4, 5, 5) numpy array of 1,000,000 input grid state representations. `actions_200000.npz` contains a (1000000, 5) numpy array of matched action Q values. The files are saved in compressed .npz format and can be loaded as 
