@@ -1,0 +1,86 @@
+---
+title: "insight_lmer"
+output: html_document
+date: "2023-06-15"
+---
+
+```{r imports, include=FALSE}
+library(readr)
+library(lme4)
+```
+
+```{r read data}
+push_data <- read_csv("data/insight_push_data_coded.csv")
+switch_data <- read_csv("data/insight_switch_data_coded.csv")
+```
+
+## Linear Mixed Effects Modeling
+Fixed effects are as follows:
+
+1. `trial_num`: the order in which the current trial was presented (0 to 7)
+
+2. `insight`: whether or not the participant has previously successfully solved a push grid of the same type (-0.5 if false, 0.5 if true)
+
+In order to assess whether the key term of interest (`insight`) is significant, we will perform model comparison of the following models using the anova function in R and use the p-value associated with the chi-square test.  
+
+```{r exp}
+push_data$insight <- 0
+  for (i in unique(push_data$userid)) {
+    idx_first_one <- which(push_data$userid == i & push_data$score_dif == 1)[1]
+    if (!is.na(idx_first_one)) {
+      push_data$insight[push_data$userid == i & seq_along(push_data$userid) > idx_first_one] <- 1
+    }
+  }
+
+switch_data$insight <- 0
+  for (i in unique(switch_data$userid)) {
+    idx_first_one <- which(switch_data$userid == i & switch_data$score_dif == 1)[1]
+    if (!is.na(idx_first_one)) {
+      switch_data$insight[switch_data$userid == i & seq_along(switch_data$userid) > idx_first_one] <- 1
+    }
+  }
+
+model1_p <- lmer(score_dif ~ (1|userid), data = push_data)
+model2a_p <- lmer(score_dif ~ insight + (1|userid), data = push_data)
+model2b_p <- lmer(score_dif ~ trial + (1|userid), data = push_data)
+model3_p <- lmer(score_dif ~ insight + trial + (1|userid), data = push_data)
+anova(model1_p, model2b_p, model3_p)
+model3_p
+
+model1_s <- lmer(score_dif ~ (1|userid), data = switch_data)
+model2a_s <- lmer(score_dif ~ insight + (1|userid), data = switch_data)
+model2b_s <- lmer(score_dif ~ trial + (1|userid), data = switch_data)
+model3_s <- lmer(score_dif ~ insight + trial + (1|userid), data = switch_data)
+anova(model1_s, model2b_s, model3_s)
+model3_s
+```
+```{r exploratory}
+
+scale_this <- function(x){
+  (x - mean(x, na.rm=TRUE)) / sd(x, na.rm=TRUE)
+}
+
+switch_data$gridtype <- -0.5
+push_data$gridtype <- 0.5
+
+all_data <- rbind(switch_data, push_data)
+all_data$insight <- all_data$insight - 0.5
+all_data$trial <- scale_this(all_data$trial)
+all_data$push_x_trial <- all_data$gridtype * all_data$trial
+all_data$push_x_insight <- all_data$gridtype * all_data$insight
+all_data$push <- all_data$gridtype
+
+model1 <- lmer(score_dif ~ insight + trial + push + push_x_trial + (push|userid), data = all_data)
+model2 <- lmer(score_dif ~ insight + trial + push + push_x_trial + push_x_insight + (push|userid), data = all_data)
+anova(model1,model2)
+
+```
+
+```{r simr}
+library(simr)
+model_ext <- extend(model, along="userid", n=200)
+sim_treat <- powerSim(model_ext, nsim=100, test = fcompare(score_dif~trial))
+sim_treat
+p_curve_treat <- powerCurve(model_ext, test=fcompare(score_dif~trial), along="userid")
+plot(p_curve_treat)
+```

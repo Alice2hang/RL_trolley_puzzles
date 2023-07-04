@@ -1,0 +1,243 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="train.css">
+        <script
+          src="https://code.jquery.com/jquery-3.3.1.min.js"
+          integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+          crossorigin="anonymous"></script>
+        <script src="gridworld-task.js" type="text/javascript"></script>
+        <script src="gridworld-setup.js" type="text/javascript"> </script>
+        <script src="gridworld-info.js" type="text/javascript"> </script>
+        <script> 
+            $(function(){   $("#consent").load("consent.html");  });
+
+            $(function(){   $("#finishpage").load("finish.html");  });
+
+            $(function(){   $("#feedbackpage").load("feedback.html");  });
+        </script> 
+
+        <script>
+
+            var train_data;
+            function prepare_train() {   
+                $.getJSON("train_data.json", function(jsondata) {
+                    train_data = jsondata
+                    clickStart("info7","page1")
+                    run_train(train_data, GridWorldTask)
+                });             
+            }
+
+            var test_data;
+            function prepare_test(){
+                $.getJSON("test_data.json", function(jsondata) {
+                    test_data = jsondata
+                    clickStart("testinfo","page2")
+                    run_test(test_data, GridWorldTask)
+                });    
+            }
+
+        </script>
+    </head>
+    <body>
+        <div id="consent"></div>
+        <div id="info1" style="display:none"> 
+            <div id="instructions">
+                Welcome! Please read these instructions carefully - this will help you earn more money by doing the task right. Each point you earn is worth <b><mark>3&cent in bonus money.</mark></b></b> <br>  
+                <br>
+                In this task you are the director of a transport station. Unfortunately the station is usually chaotic and the freight is often not where it is supposed to be.  Sometimes it might even get hit by a train. <br>
+                <br>
+                You have three main goals:
+                <ol><b>
+                <li>Try to move the freight onto its target locations</li>
+                <li>Try not to let the train hit the freight</li>
+                <li>Try not to let the train hit you</li></b>
+                </ol><br>
+                Rarely will you be able to accomplish all of these goals in the limited time you have.  You have to prioritize to get as much done as you can.
+            </div>
+            <div id="buttonbar">
+                <button type="button" id='next'; onclick="clickStart('info1','info2');"; >NEXT</button>
+            </div>
+        </div>
+
+        <div id="info2" style="display:none"> 
+                <div id="instructions">
+                Let's begin by looking at how the freight transport station is arranged.  In each trial you will see a screen like this:
+                <br><br>
+                <img src="assets/sample.png" id="centerimg">
+                <br><br>
+                This is you: <img src="assets/player.png" id="samples">
+                <br><br>
+                These are pieces of freight: <img src="assets/freight.png" id="samples">
+                <br> 
+                The piece labelled <q>$$</q> is more valuable, and the piece labelled <q>$</q> is less valuable.
+                <br><br>
+                This is a train: <img src="assets/train1.png" id="samples">
+                <br>
+                The train's orientation tells you which way it is moving. <br><br>
+                This is a switch that allows you to change the direction that the train is moving in: <img src="assets/switch.png" id="samples">
+                <br> The train will turn left, or counterclockwise, each time you hit the switch.
+                <br><br>
+                You will only have five moves in each round.  That's not very many, but usually it is enough time to do one or two useful things.
+            </div>
+            <div id="buttonbar">
+                <button type="button" id='back'; onclick="clickStart('info2','info1');"; >BACK</button>
+                <button type="button" id='next'; onclick="clickStart('info2','info3');"; >NEXT</button>
+            </div>
+        </div>
+
+        <div id="info3" style="display:none"> 
+            <div id="instructions">
+                In order to move around the freight transfer station you can use the  up, down, left, right, and space keys. The arrow keys move you in the directions indicated.  The <b>SPACE key allows you to stay in place for one move</b>. So, if you don't want to do anything but you still have some of your turns left, just hit the space bar as many times as you'd like.
+                <br><br>
+                <img src="assets/keys.png" id="centerimg"> 
+                <br><br>
+                Again, each round ends only after you have made <b>5 moves</b>. 
+                <br>
+            </div>
+            <div id="buttonbar">
+                <button type="button" id='back'; onclick="clickStart('info3','info2');"; >BACK</button>
+                <button type="button" id='next'; onclick="clickStart('info3','info4');pushDemo(GridWorldTask);"; >NEXT</button>
+            </div>
+        </div>
+
+        <div id="info4" style="display:none"> 
+            <div id="instructions">
+                Your job is to <b>put valuable cargo into their target locations</b> indicated by the corresponding colored squares. You can move the cargo by positioning yourself behind it and pushing it. If you move the cargo labeled <q>$$</q> onto its location you get 2 points.  If you move the cargo labeled <q>$</q> onto its location you get 1 point. Be careful, as you can also push a piece of cargo off of its target.
+                <br><br>
+                Go ahead and give it a try!<br><br> You may move on when you have finished <b>5 steps</b> and put all the cargo in their target locations.
+                <br> <br><br><br>
+                
+                <div id="rewardinfo4"> Reward = 0 <br/> Step = 0/5 </div>
+                
+                <div id="taskinfo4"></div>
+                
+            </div>
+            <div id="buttonbar">
+                <button type="button" id='back'; onclick="clearGrid('taskinfo4');clickStart('info4','info3');" >BACK</button>
+                <button type="button" id='next45';
+                    onclick="clickStart('info4','info5');trainDemo(GridWorldTask);clearGrid('taskinfo4');"; >NEXT</button>
+            </div>
+        </div>
+
+        <div id="info5" style="display:none"> 
+            <div id="instructions">
+                As we mentioned, there is usually a train moving through the depot.
+                <b>Every time you make a move (or push the spacebar), the train moves forward as well.   
+                You want to avoid having the train hit you or the cargo.  
+                If it does you will lose points and the train will stop in its tracks. </b>
+                <br><br>
+                You lose 2 points if the train hits the <q>$$</q> cargo. You lose 1 point if the train hits the <q>$</q> cargo.  
+                You lose 4 points if the train hits you (and you will not be able to make any more moves during that round).
+                <br><br>
+                                 
+                In a moment we want you to try out some of this on the grid below.  We have two specific tasks listed for you. Complete each of these tasks one by one, pressing "n" at the end of each round to reset the board. When you've completed both the tasks and had the chance to learn how this board works, move on.
+                <br>
+                <ol>
+                    <b>
+                        <li id="hitcargo" style="color:red">Use the space bar for 5 steps and watch the train hit the cargo.</li>
+                        <li id="hitagent" style="color:red">Move into the path of the train and see what happens</li>
+                    </b>
+                </ol>
+                <br> <br>
+                <div id="rewardinfo5"> Reward = 0 <br/> Step = 0/5 </div>
+                
+                <div id="taskinfo5"></div>
+
+            </div>
+            <div id="buttonbar">
+                <button type="button" id='back';
+                    onclick="clearGrid('taskinfo5');clickStart('info5','info4');pushDemo(GridWorldTask);"; >BACK</button>
+                <button type="button" id='next56';
+                    onclick="clickStart('info5','info6');switchDemo(GridWorldTask);clearGrid('taskinfo5');"; >NEXT</button>
+            </div>
+        </div>
+
+        <div id="info6" style="display:none"> 
+            <div id="instructions">
+                The only way to change the direction of the train is to move
+                into the switch square.  
+                This <b>rotates the train 90 degrees counterclockwise</b>. 
+                Try turning the train by flipping the switch.
+                There is no cargo for you to worry about here - your only job is to learn how to turn the train. 
+                <br><br>
+                Go ahead and give it a try! <br><br>
+                You may move on once you have finished <b>5 steps</b> and hit the switch at least once. 
+                <br><br><br><br>
+
+                <div id="rewardinfo6"> Reward = 0 <br/> Step = 0/5 </div>
+                
+                <div id="taskinfo6"></div>
+
+            </div>
+            <div id="buttonbar">
+                <button type="button" id='back';
+                    onclick="clearGrid('taskinfo6');clickStart('info6','info5');trainDemo(GridWorldTask);"; >BACK</button>
+                <button type="button" id='next67'; onclick="clickStart('info6','info7');twoTrial(GridWorldTask);clearGrid('taskinfo6');"; >NEXT</button>
+            </div>
+        </div>
+
+        <div id="info7" style="display:none"> 
+            <div id="instructions">
+                <br><br>
+                Remember that your goal is to <b>get the highest score possible for each grid. 
+                You will receive 5&cent per point in bonus money based on the total number of points you accumulate by the end of the task.</b>
+                <br><br>
+                Also remember that you will rarely be able to accomplish everything you want to in the time you have, so you need to prioritize. It is ok if you cannot do everything within the limited steps you have. The train depot is chaotic, and you should try to get as many points as you can given the situation.
+                <br><br>
+                Go ahead and try a practice round on a real grid. You must get the best score to move on.
+                <br><br><br><br>
+                <div id="rewardinfo7"> Reward = 0 <br/> Step = 0/5 </div>
+                <div id="taskinfo7"></div>
+            </div>
+            <div id="buttonbar">
+                <button type="button" id='back'; onclick="clearGrid('taskinfo7');clickStart('info7','info6');switchDemo(GridWorldTask);"; >BACK</button>
+                <button type="button" id='next78'; onclick="clearGrid('taskinfo7');clickStart('info7','page1');prepare_train()">NEXT</button>
+            </div>
+        </div>
+
+        <div id="testinfo" style="display:none">
+            <div id="instructions">
+                <p id="test_info"> </p>
+                <p id="test_info2">This is the test section, so do your best to get the highest possible score on each grid. <br><br><b>The problems during this section are difficult, and sometimes you will not be able to avoid losing points. Do not be discouraged, as you will recieve an additional point worth <mark>3&cent in bonus money</mark> for every grid in this section where you get the best possible score.</b><br><br> We will add these additional payments to your bonus at the end.  If you do well, this will ensure that your total bonus payment will increase even during this difficult phase.</p>
+                <p id="test_info3"></p>
+                <button id="testinfobutton"; onclick="testDemo(GridWorldTask);" >Start Example</button> <br><br>
+                <div id="info">
+                    <div id="infotimer" style="visibility:hidden">7</div>
+                    <div id="rewardinfotest" style="visibility:hidden"> Reward = 0 <br/> Step = 0/5 </div>
+                </div>
+                <div id="taskinfotest"></div>
+            </div>
+            <div id="buttonbar">
+                <button type="button" id='test_button'; onclick="clearGrid('taskinfotest');prepare_test();"; >BEGIN</button>
+            </div>
+        </div>
+
+        <div id="page1" style="display:none"> 
+            <div id="task"></div>
+            <div id="info">
+                <div id="timer"></div>
+                <div id="reward"> Reward = 0 <br/> Step = 0/5 </div>
+                <div id="cum_info">
+                    <div id="tasknum">.<br>Trial 1/90</div>
+                    <div id="totalscore"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="page2" style="display:none"> 
+            <div id="task2"></div>
+            <div id="info">
+                <div id="timer2"></div>
+                <div id="reward2"> Reward = 0 <br/> Step = 0/5 </div>
+                <div id="cum_info">
+                    <div id="tasknum2">.<br>Trial 1/90</div>
+                    <div id="totalscore2"></div>
+                </div>
+            </div>
+        </div>
+       
+        <div id="feedbackpage" style="display:none"></div>
+        <div id="finishpage" style="display:none">
+        </div>
+    </body>
+</html>

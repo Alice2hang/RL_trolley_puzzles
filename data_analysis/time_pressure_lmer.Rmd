@@ -47,5 +47,17 @@ anova(model_4, model_6)
 
 model_6
 ```
+SI analysis, not pre-registered
+```{r}
+data_coded_pushswitch <- read_csv("data/time_pressure_data_coded_pushswitchonly.csv")
+model_1s <- lmer(score_dif ~ (push|user_id) + (time_constraint|grid_num), data = data_coded_pushswitch)
+model_2s <- lmer(score_dif ~ time_constraint + (push|user_id) + (time_constraint|grid_num), data = data_coded_pushswitch)
+model_3s <- lmer(score_dif ~ time_constraint + push + (push|user_id) + (time_constraint|grid_num), data = data_coded_pushswitch)
+model_4s <- lmer(score_dif ~ time_constraint + push + time_x_push + (push|user_id) + (time_constraint|grid_num), data = data_coded_pushswitch)
+anova(model_2s, model_1s)
+anova(model_3s, model_2s)
+anova(model_4s, model_3s)
+```
+
 
 
