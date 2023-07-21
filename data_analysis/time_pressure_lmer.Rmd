@@ -1,5 +1,5 @@
 ---
-title: "Experiment 1 (Time Pressure/Delay Manipulation) "
+title: "Experiment 2 (Time Pressure/Delay Manipulation) "
 output: html_document
 ---
 
@@ -49,7 +49,7 @@ model_6
 ```
 SI analysis, not pre-registered
 ```{r}
-data_coded_pushswitch <- read_csv("data/time_pressure_data_coded_pushswitchonly.csv")
+data_coded_pushswitch <- read_csv("data/time_pressure_data_pushswitchonly_coded.csv")
 model_1s <- lmer(score_dif ~ (push|user_id) + (time_constraint|grid_num), data = data_coded_pushswitch)
 model_2s <- lmer(score_dif ~ time_constraint + (push|user_id) + (time_constraint|grid_num), data = data_coded_pushswitch)
 model_3s <- lmer(score_dif ~ time_constraint + push + (push|user_id) + (time_constraint|grid_num), data = data_coded_pushswitch)

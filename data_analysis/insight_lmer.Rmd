@@ -1,5 +1,5 @@
 ---
-title: "insight_lmer"
+title: "Experiment 1: Effect of First Insight"
 output: html_document
 date: "2023-06-15"
 ---
@@ -31,6 +31,7 @@ push_data$insight <- 0
       push_data$insight[push_data$userid == i & seq_along(push_data$userid) > idx_first_one] <- 1
     }
   }
+#push_data$trial <- push_data$trial - 1 
 
 switch_data$insight <- 0
   for (i in unique(switch_data$userid)) {
@@ -39,6 +40,8 @@ switch_data$insight <- 0
       switch_data$insight[switch_data$userid == i & seq_along(switch_data$userid) > idx_first_one] <- 1
     }
   }
+#switch_data$trial <- switch_data$trial - 1 
+
 
 model1_p <- lmer(score_dif ~ (1|userid), data = push_data)
 model2a_p <- lmer(score_dif ~ insight + (1|userid), data = push_data)
@@ -54,6 +57,13 @@ model3_s <- lmer(score_dif ~ insight + trial + (1|userid), data = switch_data)
 anova(model1_s, model2b_s, model3_s)
 model3_s
 ```
+
+```{r emmeans}
+library(emmeans)
+emmeans(model3_p,specs = "insight")
+emmeans(model3_s,specs = "insight")
+```
+
 ```{r exploratory}
 
 scale_this <- function(x){
@@ -76,11 +86,3 @@ anova(model1,model2)
 
 ```
 
-```{r simr}
-library(simr)
-model_ext <- extend(model, along="userid", n=200)
-sim_treat <- powerSim(model_ext, nsim=100, test = fcompare(score_dif~trial))
-sim_treat
-p_curve_treat <- powerCurve(model_ext, test=fcompare(score_dif~trial), along="userid")
-plot(p_curve_treat)
-```

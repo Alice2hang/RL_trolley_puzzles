@@ -10,8 +10,9 @@
 
 
 
+<meta name="date" content="2023-06-15" />
 
-<title>Experiment 3 (Training/No Training Manipulation)</title>
+<title>Experiment 1: Effect of First Insight</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -348,18 +349,27 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Experiment 3 (Training/No Training
-Manipulation)</h1>
+<h1 class="title toc-ignore">Experiment 1: Effect of First Insight</h1>
+<h4 class="date">2023-06-15</h4>
 
 </div>
 
 
-<pre class="r"><code>data &lt;- read_csv(&quot;data/training_data_coded.csv&quot;)</code></pre>
+<pre class="r"><code>push_data &lt;- read_csv(&quot;data/insight_push_data_coded.csv&quot;)</code></pre>
 <pre><code>## New names:
-## Rows: 2151 Columns: 7
+## Rows: 2040 Columns: 6
 ## ── Column specification
-## ──────────────────────────────────────────────────────── Delimiter: &quot;,&quot; dbl
-## (7): ...1, score_dif, user_id, grid_num, push, train_x_push, train
+## ──────────────────────────────────────────────────────── Delimiter: &quot;,&quot; chr
+## (1): gridtype dbl (5): ...1, trial, score_dif, userid, gridnum
+## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+## Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## • `` -&gt; `...1`</code></pre>
+<pre class="r"><code>switch_data &lt;- read_csv(&quot;data/insight_switch_data_coded.csv&quot;)</code></pre>
+<pre><code>## New names:
+## Rows: 2040 Columns: 6
+## ── Column specification
+## ──────────────────────────────────────────────────────── Delimiter: &quot;,&quot; chr
+## (1): gridtype dbl (5): ...1, trial, score_dif, userid, gridnum
 ## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
 ## Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ## • `` -&gt; `...1`</code></pre>
@@ -367,88 +377,135 @@ Manipulation)</h1>
 <h2>Linear Mixed Effects Modeling</h2>
 <p>Fixed effects are as follows:</p>
 <ol style="list-style-type: decimal">
-<li><p><code>train_group</code>: the assigned training condition (0.5 if
-training, -0.5 if no training)</p></li>
-<li><p><code>push</code>: differentiates between push type grids and the
-matched switch control (0.5 for must push, -0.5 for must
-switch)</p></li>
-<li><p><code>train_x_push</code>: interaction between push and
-train_group</p></li>
+<li><p><code>trial_num</code>: the order in which the current trial was
+presented (0 to 7)</p></li>
+<li><p><code>insight</code>: whether or not the participant has
+previously successfully solved a push grid of the same type (-0.5 if
+false, 0.5 if true)</p></li>
 </ol>
-<p>In order to assess whether the key interaction of interest
-(<code>train_x_push</code>) is significant, we will perform model
-comparison using the <code>anova</code> function in R for the following
-models.</p>
-<pre class="r"><code>model_1 &lt;- lmer(score_dif ~ push + (push|user_id) + (train|grid_num), data = data)
-model_2 &lt;- lmer(score_dif ~ train + (push|user_id) + (train|grid_num), data = data)</code></pre>
-<pre><code>## Warning in checkConv(attr(opt, &quot;derivs&quot;), opt$par, ctrl = control$checkConv, :
-## Model failed to converge with max|grad| = 0.00220879 (tol = 0.002, component 1)</code></pre>
-<pre class="r"><code>model_3 &lt;- lmer(score_dif ~ train + push + (push|user_id) + (train|grid_num), data = data)
-full_model &lt;- lmer(score_dif ~ train + push + train_x_push + (push|user_id) + (train|grid_num), data = data)
-summary(full_model)</code></pre>
+<p>In order to assess whether the key term of interest
+(<code>insight</code>) is significant, we will perform model comparison
+of the following models using the anova function in R and use the
+p-value associated with the chi-square test.</p>
+<pre class="r"><code>push_data$insight &lt;- 0
+  for (i in unique(push_data$userid)) {
+    idx_first_one &lt;- which(push_data$userid == i &amp; push_data$score_dif == 1)[1]
+    if (!is.na(idx_first_one)) {
+      push_data$insight[push_data$userid == i &amp; seq_along(push_data$userid) &gt; idx_first_one] &lt;- 1
+    }
+  }
+#push_data$trial &lt;- push_data$trial - 1 
+
+switch_data$insight &lt;- 0
+  for (i in unique(switch_data$userid)) {
+    idx_first_one &lt;- which(switch_data$userid == i &amp; switch_data$score_dif == 1)[1]
+    if (!is.na(idx_first_one)) {
+      switch_data$insight[switch_data$userid == i &amp; seq_along(switch_data$userid) &gt; idx_first_one] &lt;- 1
+    }
+  }
+#switch_data$trial &lt;- switch_data$trial - 1 
+
+
+model1_p &lt;- lmer(score_dif ~ (1|userid), data = push_data)
+model2a_p &lt;- lmer(score_dif ~ insight + (1|userid), data = push_data)
+model2b_p &lt;- lmer(score_dif ~ trial + (1|userid), data = push_data)
+model3_p &lt;- lmer(score_dif ~ insight + trial + (1|userid), data = push_data)
+anova(model1_p, model2b_p, model3_p)</code></pre>
+<pre><code>## refitting model(s) with ML (instead of REML)</code></pre>
+<pre><code>## Data: push_data
+## Models:
+## model1_p: score_dif ~ (1 | userid)
+## model2b_p: score_dif ~ trial + (1 | userid)
+## model3_p: score_dif ~ insight + trial + (1 | userid)
+##           npar    AIC    BIC  logLik deviance   Chisq Df Pr(&gt;Chisq)    
+## model1_p     3 2459.9 2476.8 -1227.0   2453.9                          
+## model2b_p    4 2294.0 2316.4 -1143.0   2286.0 167.956  1  &lt; 2.2e-16 ***
+## model3_p     5 2277.4 2305.5 -1133.7   2267.4  18.552  1  1.654e-05 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>model3_p</code></pre>
 <pre><code>## Linear mixed model fit by REML [&#39;lmerMod&#39;]
-## Formula: score_dif ~ train + push + train_x_push + (push | user_id) +  
-##     (train | grid_num)
-##    Data: data
-## 
-## REML criterion at convergence: 2270.9
-## 
-## Scaled residuals: 
-##     Min      1Q  Median      3Q     Max 
-## -2.2988 -0.5632 -0.1400  0.5731  2.4561 
-## 
+## Formula: score_dif ~ insight + trial + (1 | userid)
+##    Data: push_data
+## REML criterion at convergence: 2288.347
 ## Random effects:
-##  Groups   Name        Variance Std.Dev. Corr 
-##  user_id  (Intercept) 0.021275 0.14586       
-##           push        0.101261 0.31821  -0.63
-##  grid_num (Intercept) 0.012958 0.11383       
-##           train       0.003107 0.05574  -0.60
-##  Residual             0.129599 0.36000       
-## Number of obs: 2151, groups:  user_id, 398; grid_num, 16
+##  Groups   Name        Std.Dev.
+##  userid   (Intercept) 0.2492  
+##  Residual             0.3851  
+## Number of obs: 2040, groups:  userid, 255
+## Fixed Effects:
+## (Intercept)      insight        trial  
+##     0.38700      0.12769      0.03385</code></pre>
+<pre class="r"><code>model1_s &lt;- lmer(score_dif ~ (1|userid), data = switch_data)
+model2a_s &lt;- lmer(score_dif ~ insight + (1|userid), data = switch_data)
+model2b_s &lt;- lmer(score_dif ~ trial + (1|userid), data = switch_data)
+model3_s &lt;- lmer(score_dif ~ insight + trial + (1|userid), data = switch_data)
+anova(model1_s, model2b_s, model3_s)</code></pre>
+<pre><code>## refitting model(s) with ML (instead of REML)</code></pre>
+<pre><code>## Data: switch_data
+## Models:
+## model1_s: score_dif ~ (1 | userid)
+## model2b_s: score_dif ~ trial + (1 | userid)
+## model3_s: score_dif ~ insight + trial + (1 | userid)
+##           npar     AIC     BIC logLik deviance  Chisq Df Pr(&gt;Chisq)
+## model1_s     3 -267.39 -250.53 136.70  -273.39                     
+## model2b_s    4 -265.72 -243.24 136.86  -273.72 0.3266  1     0.5677
+## model3_s     5 -263.74 -235.64 136.87  -273.74 0.0196  1     0.8886</code></pre>
+<pre class="r"><code>model3_s</code></pre>
+<pre><code>## Linear mixed model fit by REML [&#39;lmerMod&#39;]
+## Formula: score_dif ~ insight + trial + (1 | userid)
+##    Data: switch_data
+## REML criterion at convergence: -248.7034
+## Random effects:
+##  Groups   Name        Std.Dev.
+##  userid   (Intercept) 0.06005 
+##  Residual             0.21991 
+## Number of obs: 2040, groups:  userid, 255
+## Fixed Effects:
+## (Intercept)      insight        trial  
+##    0.951766    -0.002518    -0.000996</code></pre>
+<pre class="r"><code>library(emmeans)
+emmeans(model3_p,specs = &quot;insight&quot;)</code></pre>
+<pre><code>##  insight emmean     SE  df lower.CL upper.CL
+##        0  0.539 0.0256 740    0.489    0.590
+##        1  0.667 0.0199 369    0.628    0.706
 ## 
-## Fixed effects:
-##              Estimate Std. Error t value
-## (Intercept)  -0.61784    0.03047 -20.277
-## train         0.07396    0.02585   2.861
-## push         -0.42944    0.06128  -7.008
-## train_x_push -0.11337    0.05328  -2.128
+## Degrees-of-freedom method: kenward-roger 
+## Confidence level used: 0.95</code></pre>
+<pre class="r"><code>emmeans(model3_s,specs = &quot;insight&quot;)</code></pre>
+<pre><code>##  insight emmean      SE   df lower.CL upper.CL
+##        0  0.947 0.01663 2030    0.915    0.980
+##        1  0.945 0.00658  332    0.932    0.958
 ## 
-## Correlation of Fixed Effects:
-##             (Intr) train  push  
-## train       -0.355              
-## push        -0.038  0.014       
-## train_x_psh  0.014 -0.206 -0.347</code></pre>
-<pre class="r"><code>anova(model_1, model_3)</code></pre>
+## Degrees-of-freedom method: kenward-roger 
+## Confidence level used: 0.95</code></pre>
+<pre class="r"><code>scale_this &lt;- function(x){
+  (x - mean(x, na.rm=TRUE)) / sd(x, na.rm=TRUE)
+}
+
+switch_data$gridtype &lt;- -0.5
+push_data$gridtype &lt;- 0.5
+
+all_data &lt;- rbind(switch_data, push_data)
+all_data$insight &lt;- all_data$insight - 0.5
+all_data$trial &lt;- scale_this(all_data$trial)
+all_data$push_x_trial &lt;- all_data$gridtype * all_data$trial
+all_data$push_x_insight &lt;- all_data$gridtype * all_data$insight
+all_data$push &lt;- all_data$gridtype
+
+model1 &lt;- lmer(score_dif ~ insight + trial + push + push_x_trial + (push|userid), data = all_data)</code></pre>
+<pre><code>## boundary (singular) fit: see help(&#39;isSingular&#39;)</code></pre>
+<pre class="r"><code>model2 &lt;- lmer(score_dif ~ insight + trial + push + push_x_trial + push_x_insight + (push|userid), data = all_data)</code></pre>
+<pre><code>## boundary (singular) fit: see help(&#39;isSingular&#39;)</code></pre>
+<pre class="r"><code>anova(model1,model2)</code></pre>
 <pre><code>## refitting model(s) with ML (instead of REML)</code></pre>
-<pre><code>## Data: data
+<pre><code>## Data: all_data
 ## Models:
-## model_1: score_dif ~ push + (push | user_id) + (train | grid_num)
-## model_3: score_dif ~ train + push + (push | user_id) + (train | grid_num)
-##         npar    AIC    BIC  logLik deviance  Chisq Df Pr(&gt;Chisq)  
-## model_1    9 2279.9 2330.9 -1130.9   2261.9                       
-## model_3   10 2276.6 2333.3 -1128.3   2256.6 5.3167  1    0.02112 *
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<pre class="r"><code>anova(model_2, model_3)</code></pre>
-<pre><code>## refitting model(s) with ML (instead of REML)</code></pre>
-<pre><code>## Data: data
-## Models:
-## model_2: score_dif ~ train + (push | user_id) + (train | grid_num)
-## model_3: score_dif ~ train + push + (push | user_id) + (train | grid_num)
-##         npar    AIC    BIC  logLik deviance  Chisq Df Pr(&gt;Chisq)    
-## model_2    9 2301.1 2352.1 -1141.5   2283.1                         
-## model_3   10 2276.6 2333.3 -1128.3   2256.6 26.503  1  2.631e-07 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<pre class="r"><code>anova(model_3, full_model)</code></pre>
-<pre><code>## refitting model(s) with ML (instead of REML)</code></pre>
-<pre><code>## Data: data
-## Models:
-## model_3: score_dif ~ train + push + (push | user_id) + (train | grid_num)
-## full_model: score_dif ~ train + push + train_x_push + (push | user_id) + (train | grid_num)
-##            npar    AIC    BIC  logLik deviance  Chisq Df Pr(&gt;Chisq)  
-## model_3      10 2276.6 2333.3 -1128.3   2256.6                       
-## full_model   11 2274.0 2336.4 -1126.0   2252.0 4.5273  1    0.03336 *
+## model1: score_dif ~ insight + trial + push + push_x_trial + (push | userid)
+## model2: score_dif ~ insight + trial + push + push_x_trial + push_x_insight + (push | userid)
+##        npar    AIC    BIC  logLik deviance  Chisq Df Pr(&gt;Chisq)  
+## model1    9 2548.5 2605.3 -1265.3   2530.5                       
+## model2   10 2545.2 2608.3 -1262.6   2525.2 5.3286  1    0.02098 *
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 </div>
