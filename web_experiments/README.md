@@ -12,12 +12,12 @@ The code for `gridworld-task` was adapted from https://github.com/markkho/gridwo
 All database authentication information in *_config.php files has been removed, meaning that data will not be saved on the backend, although the experiments can still be run locally without impact to user experience.
 
 ## Run Locally
-To set up the package, once `npm` is installed:
+Requires `npm (>=9.5.0)` and `python3 (>=3.9.16)`. In any of the experiment subdirectories, run:
 ```
 npm install
 ```
-
-To run and open page locally (requires python3):
+Followed by:
 ```
 npm start
 ```
+This should take a few seconds only.
