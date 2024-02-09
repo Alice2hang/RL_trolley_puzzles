@@ -8,6 +8,9 @@
 * `dual_model_analysis.ipynb` generates graphs of model performance seen in paper. A html version is also provided with final outputs.
 * `supplementals.ipynb` generates exploratory figures not featured in the paper or supplement.
 
+## Requirements
+Some files require `git-lfs`. Install `git-lfs` and run `git lfs pull` to access neural net training data and the saved, trained CNN model locally.
+
 ## Data 
 Neural net training data is stored in `training_data/`. `grids_200000.npz` contains a (1000000, 4, 5, 5) numpy array of 1,000,000 input grid state representations. `actions_200000.npz` contains a (1000000, 5) numpy array of matched action Q values. The files are saved in compressed .npz format and can be loaded as 
 ```
