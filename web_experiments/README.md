@@ -20,4 +20,4 @@ Followed by:
 ```
 npm start
 ```
-This should take a few seconds only.
+This should take a few seconds only and will launch a local version of the web task at http://localhost:8123/.
