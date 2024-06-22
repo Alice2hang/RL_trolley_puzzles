@@ -7,4 +7,3 @@ Tasks, data, models, and analysis code for the paper "Similar failures of consid
 
 Instructions for dependencies, installation, and running are documented in the README under each directory.
 
-[![DOI](https://zenodo.org/badge/492374557.svg)](https://zenodo.org/badge/latestdoi/492374557)
