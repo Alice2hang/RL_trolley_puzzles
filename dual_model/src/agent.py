@@ -4,6 +4,7 @@ from scipy.special import softmax
 
 import neural_net
 from utils import generate_array, display_grid
+from itertools import product
 
 ACTION_DICT = {(0, 0):0, (-1, 0):1, (0, 1):2, (1, 0):3, (0, -1):4} 
 
@@ -22,7 +23,6 @@ class Agent:
         except(AttributeError):
             try:
                 net = neural_net.load()
-                print("neural net loaded")
                 self.net = net
                 return net
             except:
@@ -133,7 +133,7 @@ class Agent:
         if display: print(total_reward)
         return total_reward
 
-    def mc_first_visit_control(self, start_grid, iters, discount_factor=0.9, epsilon=0.2, nn_init=False, softmax=False) -> tuple:
+    def mc_first_visit_control(self, start_grid, iters, discount_factor=0.9, epsilon=0.2, nn_init=False, softmax=False, compute_full_Q_dict = False) -> tuple:
         """
         Monte Carlo first visit control algo. Uses epsilon greedy strategy to find optimal policy. 
         Details can be found page 101 of Sutton and Barto RL Book
@@ -151,6 +151,18 @@ class Agent:
 
         if nn_init:
             Q = {}
+            if compute_full_Q_dict:
+                all_permutations = [list(p) for p in product(range(5), repeat=5)]
+                for action_sequence in all_permutations:
+                    grid = start_grid.copy()
+                    state = grid.current_state
+                    for action in action_sequence:
+                        if not grid.terminal_state:
+                            if state not in Q:
+                                Q[state] = self.neural_net_output(grid)
+                            action = grid.all_actions[action]
+                            newstate = grid.T(action)
+                            state = newstate
         else:
             Q = defaultdict(lambda: np.zeros(5,dtype=np.float32))
 

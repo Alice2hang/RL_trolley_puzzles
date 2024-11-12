@@ -10,13 +10,15 @@ class Grid:
             {'train':(1,1),'agent':(2,2),'other1':(2,1),'switch':(4,1),'other2':(2,0),'other1num':3,...}
     '''
 
-    def __init__(self, init_pos={}):
+    def __init__(self, init_pos={},step=None):
         # available actions: stay, north, east, south, west
         self.all_actions =[(0, 0), (-1, 0), (0, 1), (1, 0), (0, -1)]
-
         self.size = 5
+
         self.terminal_state = False
         self.step = 1
+        if step:
+            self.step = step
         self.alive = True
         self._place_all(init_pos)
         self.current_state = (self.agent_pos,self.train.pos,*self.other_agents.positions,self.step)
