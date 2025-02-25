@@ -461,6 +461,23 @@ anova(model_4, model_6)</code></pre>
 ## Fixed Effects:
 ##     (Intercept)  time_constraint             push      time_x_push  
 ##         -0.1906           0.1099          -0.4208           0.1112</code></pre>
+<pre class="r"><code>confint(model_6)</code></pre>
+<pre><code>## Computing profile confidence intervals ...</code></pre>
+<pre><code>## Warning in FUN(X[[i]], ...): non-monotonic profile for .sig05</code></pre>
+<pre><code>## Warning in confint.thpr(pp, level = level, zeta = zeta): bad spline fit for
+## .sig05: falling back to linear interpolation</code></pre>
+<pre><code>##                       2.5 %      97.5 %
+## .sig01           0.09084244  0.12378022
+## .sig02          -0.84869315 -0.42914312
+## .sig03           0.09417560  0.14949161
+## .sig04           0.10090507  0.17201102
+## .sig05          -1.00000000 -0.46328169
+## .sig06           0.02776979  0.09348404
+## .sigma           0.30544083  0.31929408
+## (Intercept)     -0.24146073 -0.14026808
+## time_constraint  0.06579508  0.15534815
+## push            -0.55495641 -0.28666036
+## time_x_push      0.02900020  0.19348305</code></pre>
 <p>SI analysis, not pre-registered</p>
 <pre class="r"><code>data_coded_pushswitch &lt;- read_csv(&quot;data/time_pressure_data_pushswitchonly_coded.csv&quot;)</code></pre>
 <pre><code>## New names:
@@ -471,8 +488,10 @@ anova(model_4, model_6)</code></pre>
 ## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
 ## Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ## • `` -&gt; `...1`</code></pre>
-<pre class="r"><code>model_1s &lt;- lmer(score_dif ~ (push|user_id) + (time_constraint|grid_num), data = data_coded_pushswitch)
-model_2s &lt;- lmer(score_dif ~ time_constraint + (push|user_id) + (time_constraint|grid_num), data = data_coded_pushswitch)
+<pre class="r"><code>model_1s &lt;- lmer(score_dif ~ (push|user_id) + (time_constraint|grid_num), data = data_coded_pushswitch)</code></pre>
+<pre><code>## Warning in checkConv(attr(opt, &quot;derivs&quot;), opt$par, ctrl = control$checkConv, :
+## Model failed to converge with max|grad| = 0.00203246 (tol = 0.002, component 1)</code></pre>
+<pre class="r"><code>model_2s &lt;- lmer(score_dif ~ time_constraint + (push|user_id) + (time_constraint|grid_num), data = data_coded_pushswitch)
 model_3s &lt;- lmer(score_dif ~ time_constraint + push + (push|user_id) + (time_constraint|grid_num), data = data_coded_pushswitch)
 model_4s &lt;- lmer(score_dif ~ time_constraint + push + time_x_push + (push|user_id) + (time_constraint|grid_num), data = data_coded_pushswitch)
 anova(model_2s, model_1s)</code></pre>
@@ -508,6 +527,226 @@ anova(model_2s, model_1s)</code></pre>
 ## model_4s   11 1605.9 1668.0 -791.95   1583.9 3.7287  1    0.05348 .
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>model_3s</code></pre>
+<pre><code>## Linear mixed model fit by REML [&#39;lmerMod&#39;]
+## Formula: 
+## score_dif ~ time_constraint + push + (push | user_id) + (time_constraint |  
+##     grid_num)
+##    Data: data_coded_pushswitch
+## REML criterion at convergence: 1602.119
+## Random effects:
+##  Groups   Name            Std.Dev. Corr 
+##  user_id  (Intercept)     0.15130       
+##           push            0.25989  0.98 
+##  grid_num (Intercept)     0.10783       
+##           time_constraint 0.06199  -0.38
+##  Residual                 0.32801       
+## Number of obs: 2097, groups:  user_id, 136; grid_num, 16
+## Fixed Effects:
+##     (Intercept)  time_constraint             push  
+##         -0.3059           0.1417          -0.3976</code></pre>
+<pre class="r"><code>confint(model_3s)</code></pre>
+<pre><code>## Computing profile confidence intervals ...</code></pre>
+<pre><code>## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): unexpected decrease in
+## profile: using minstep</code></pre>
+<pre><code>## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): unexpected decrease in
+## profile: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): unexpected decrease in
+## profile: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): unexpected decrease in
+## profile: using minstep</code></pre>
+<pre><code>## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep
+## Warning in nextpar(mat, cc, i, delta, lowcut, upcut): Last two rows have
+## identical or NA .zeta values: using minstep</code></pre>
+<pre><code>## Warning in FUN(X[[i]], ...): non-monotonic profile for .sig05</code></pre>
+<pre><code>## Warning in confint.thpr(pp, level = level, zeta = zeta): bad spline fit for
+## .sig05: falling back to linear interpolation</code></pre>
+<pre><code>## Warning in regularize.values(x, y, ties, missing(ties), na.rm = na.rm):
+## collapsing to unique &#39;x&#39; values</code></pre>
+<pre><code>##                        2.5 %     97.5 %
+## .sig01           0.128840877  0.1766008
+## .sig02           0.872516104  0.9913100
+## .sig03           0.218472109  0.3071047
+## .sig04           0.071258693  0.1546521
+## .sig05          -1.000000000  0.5355879
+## .sig06           0.009900711  0.1115392
+## .sigma           0.317614398  0.3390768
+## (Intercept)     -0.366045670 -0.2456793
+## time_constraint  0.086586016  0.2019028
+## push            -0.517731160 -0.2756254</code></pre>
 </div>
 
 

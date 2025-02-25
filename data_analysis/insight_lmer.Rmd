@@ -7,6 +7,7 @@ date: "2023-06-15"
 ```{r imports, include=FALSE}
 library(readr)
 library(lme4)
+library(effectsize)
 ```
 
 ```{r read data}
@@ -49,6 +50,7 @@ model2b_p <- lmer(score_dif ~ trial + (1|userid), data = push_data)
 model3_p <- lmer(score_dif ~ insight + trial + (1|userid), data = push_data)
 anova(model1_p, model2b_p, model3_p)
 model3_p
+confint(model3_p)
 
 model1_s <- lmer(score_dif ~ (1|userid), data = switch_data)
 model2a_s <- lmer(score_dif ~ insight + (1|userid), data = switch_data)
@@ -56,6 +58,7 @@ model2b_s <- lmer(score_dif ~ trial + (1|userid), data = switch_data)
 model3_s <- lmer(score_dif ~ insight + trial + (1|userid), data = switch_data)
 anova(model1_s, model2b_s, model3_s)
 model3_s
+confint(model3_s)
 ```
 
 ```{r emmeans}

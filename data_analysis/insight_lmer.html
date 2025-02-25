@@ -436,6 +436,14 @@ anova(model1_p, model2b_p, model3_p)</code></pre>
 ## Fixed Effects:
 ## (Intercept)      insight        trial  
 ##     0.38700      0.12769      0.03385</code></pre>
+<pre class="r"><code>confint(model3_p)</code></pre>
+<pre><code>## Computing profile confidence intervals ...</code></pre>
+<pre><code>##                  2.5 %     97.5 %
+## .sig01      0.21944099 0.28066596
+## .sigma      0.37244813 0.39800914
+## (Intercept) 0.33855387 0.43556181
+## insight     0.06976666 0.18684322
+## trial       0.02367104 0.04385764</code></pre>
 <pre class="r"><code>model1_s &lt;- lmer(score_dif ~ (1|userid), data = switch_data)
 model2a_s &lt;- lmer(score_dif ~ insight + (1|userid), data = switch_data)
 model2b_s &lt;- lmer(score_dif ~ trial + (1|userid), data = switch_data)
@@ -464,20 +472,35 @@ anova(model1_s, model2b_s, model3_s)</code></pre>
 ## Fixed Effects:
 ## (Intercept)      insight        trial  
 ##    0.951766    -0.002518    -0.000996</code></pre>
-<pre class="r"><code>library(emmeans)
-emmeans(model3_p,specs = &quot;insight&quot;)</code></pre>
-<pre><code>##  insight emmean     SE  df lower.CL upper.CL
-##        0  0.539 0.0256 740    0.489    0.590
-##        1  0.667 0.0199 369    0.628    0.706
+<pre class="r"><code>confint(model3_s)</code></pre>
+<pre><code>## Computing profile confidence intervals ...</code></pre>
+<pre><code>##                    2.5 %     97.5 %
+## .sig01       0.044968931 0.07412393
+## .sigma       0.212769296 0.22719988
+## (Intercept)  0.923908163 0.97960999
+## insight     -0.037392987 0.03243735
+## trial       -0.006144253 0.00414521</code></pre>
+<pre class="r"><code>library(emmeans)</code></pre>
+<pre><code>## Welcome to emmeans.
+## Caution: You lose important information if you filter this package&#39;s results.
+## See &#39;? untidy&#39;</code></pre>
+<pre class="r"><code>emmeans(model3_p,specs = &quot;insight&quot;)</code></pre>
+<pre><code>## Cannot use mode = &quot;kenward-roger&quot; because *pbkrtest* package is not installed</code></pre>
+<pre><code>## Cannot use mode = &quot;satterthwaite&quot; because *lmerTest* package is not installed</code></pre>
+<pre><code>##  insight emmean     SE  df asymp.LCL asymp.UCL
+##        0  0.539 0.0256 Inf     0.489     0.589
+##        1  0.667 0.0199 Inf     0.628     0.706
 ## 
-## Degrees-of-freedom method: kenward-roger 
+## Degrees-of-freedom method: asymptotic 
 ## Confidence level used: 0.95</code></pre>
 <pre class="r"><code>emmeans(model3_s,specs = &quot;insight&quot;)</code></pre>
-<pre><code>##  insight emmean      SE   df lower.CL upper.CL
-##        0  0.947 0.01663 2030    0.915    0.980
-##        1  0.945 0.00658  332    0.932    0.958
+<pre><code>## Cannot use mode = &quot;kenward-roger&quot; because *pbkrtest* package is not installed
+## Cannot use mode = &quot;satterthwaite&quot; because *lmerTest* package is not installed</code></pre>
+<pre><code>##  insight emmean      SE  df asymp.LCL asymp.UCL
+##        0  0.947 0.01660 Inf     0.915     0.980
+##        1  0.945 0.00658 Inf     0.932     0.958
 ## 
-## Degrees-of-freedom method: kenward-roger 
+## Degrees-of-freedom method: asymptotic 
 ## Confidence level used: 0.95</code></pre>
 <pre class="r"><code>scale_this &lt;- function(x){
   (x - mean(x, na.rm=TRUE)) / sd(x, na.rm=TRUE)

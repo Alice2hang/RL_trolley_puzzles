@@ -6,6 +6,7 @@ output: html_document
 ```{r imports, include=FALSE}
 library(readr)
 library(lme4)
+library(effectsize)
 ```
 
 ```{r read data}
@@ -30,6 +31,7 @@ model_2 <- lmer(score_dif ~ train + (push|user_id) + (train|grid_num), data = da
 model_3 <- lmer(score_dif ~ train + push + (push|user_id) + (train|grid_num), data = data)
 full_model <- lmer(score_dif ~ train + push + train_x_push + (push|user_id) + (train|grid_num), data = data)
 summary(full_model)
+confint(full_model)
 ```
 
 ```{r anovas}
